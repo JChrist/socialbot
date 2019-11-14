@@ -1,0 +1,28 @@
+# Eclipse
+.project
+.classpath
+.settings/
+bin/
+
+# IntelliJ
+.idea
+*.ipr
+*.iml
+*.iws
+
+# NetBeans
+nb-configuration.xml
+
+# Visual Studio Code
+.vscode
+
+# Vim
+*.swp
+*.swo
+
+# Maven
+target/
+*.class
+*.jar
+*.properties
+*.log
