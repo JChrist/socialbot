@@ -69,7 +69,7 @@ public class ListPoller {
     public void getListStatuses() {
         try {
             var rls = twitter.list().getUserListStatuses(cp.getListId(), new Paging(1, 1, lastId));
-            if (rls == null) {
+            if (rls == null || rls.isEmpty()) {
                 return;
             }
             rls.sort(Comparator.comparingLong(Status::getId));
