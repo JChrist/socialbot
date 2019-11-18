@@ -8,12 +8,17 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Strings;
-import gr.jchrist.social.conf.ConfigProvider;
-import org.json.JSONArray;
-import org.json.JSONObject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import twitter4j.*;
+
+import gr.jchrist.social.conf.ConfigProvider;
+import twitter4j.MediaEntity;
+import twitter4j.Paging;
+import twitter4j.Status;
+import twitter4j.Twitter;
+import twitter4j.TwitterFactory;
+import twitter4j.URLEntity;
 import twitter4j.conf.ConfigurationBuilder;
 
 public class ListPoller {
@@ -68,7 +73,7 @@ public class ListPoller {
 
     public void getListStatuses() {
         try {
-            var rls = twitter.list().getUserListStatuses(cp.getListId(), new Paging(1, 1, lastId));
+            var rls = twitter.list().getUserListStatuses(cp.getListId(), new Paging(1, 1000, lastId));
             if (rls == null || rls.isEmpty()) {
                 return;
             }
