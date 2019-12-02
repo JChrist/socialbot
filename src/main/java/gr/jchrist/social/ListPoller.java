@@ -81,7 +81,9 @@ public class ListPoller {
                 tr.add(js);
             }
 
-            lastId = tr.last().getLong("id");
+            if (!tr.isEmpty) {
+                lastId = tr.last().getLong("id");
+            }
 
             return tr;
         } catch (Exception e) {
