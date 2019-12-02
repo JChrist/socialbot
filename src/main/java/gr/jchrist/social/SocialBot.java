@@ -7,11 +7,15 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import gr.jchrist.social.conf.ConfigProvider;
 
 public class SocialBot {
+    private static final Logger logger = Logger.getLogger(SocialBot.class.getName());
     private final ConfigProvider cp;
     private final ScheduledExecutorService schedExec;
     private final ExecutorService pubExec;
@@ -42,6 +46,13 @@ public class SocialBot {
     }
 
     public static void main(String[] args) throws Exception {
+        if (logger.getParent().getHandlers().length == 0) {
+            logger.getParent().addHandler(new ConsoleHandler());
+        }
+        for (var h : logger.getParent().getHandlers()) {
+            h.setLevel(Level.INFO);
+        }
+        logger.info("starting up application");
         Map<String, String> env = new HashMap<>(System.getenv());
         env.putAll(System.getProperties().stringPropertyNames().stream()
             .collect(Collectors.toMap(k -> k, System::getProperty)));

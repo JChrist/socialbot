@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>gr.jchrist</groupId>
     <artifactId>socialbot</artifactId>
-    <version>0.0.1</version>
+    <version>0.1.0</version>
 
     <properties>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -13,12 +13,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
 
-        <slf4j.version>1.7.29</slf4j.version>
-        <logback.version>1.2.3</logback.version>
-        <guava.version>28.1-jre</guava.version>
         <json.version>20190722</json.version>
-        <twitter.version>4.0.7</twitter.version>
-        <okhttp.version>4.2.2</okhttp.version>
 
         <surefire.version>3.0.0-M3</surefire.version>
         <junit.version>5.5.2</junit.version>
@@ -27,34 +22,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.twitter4j</groupId>
-            <artifactId>twitter4j-core</artifactId>
-            <version>${twitter.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>${json.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.squareup.okhttp3</groupId>
-            <artifactId>okhttp</artifactId>
-            <version>${okhttp.version}</version>
         </dependency>
 
         <dependency>

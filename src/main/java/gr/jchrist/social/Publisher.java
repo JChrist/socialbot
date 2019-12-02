@@ -1,29 +1,30 @@
 package gr.jchrist.social;
 
-import com.google.common.base.Strings;
 import gr.jchrist.social.conf.ConfigProvider;
-import okhttp3.*;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Publisher {
-    private static final Logger logger = LoggerFactory.getLogger(Publisher.class);
-    public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
-    private final ConfigProvider cp;
+    private static final Logger logger = Logger.getLogger(Publisher.class.getName());
     private final BlockingQueue<String> notifQueue;
-    private final OkHttpClient client;
+    private final HttpClient client;
     private volatile boolean keepRunning;
+    private final URI chatUri;
 
     public Publisher(ConfigProvider cp, BlockingQueue<String> notifQueue) {
-        this.cp = cp;
         this.notifQueue = notifQueue;
         this.keepRunning = true;
-        this.client = new OkHttpClient();
+        this.chatUri = URI.create(cp.getChatUrl());
+        this.client = HttpClient.newHttpClient();
     }
 
     public void init(ExecutorService exec) {
@@ -38,32 +39,28 @@ public class Publisher {
         while (keepRunning) {
             try {
                 String msg = notifQueue.poll(10, TimeUnit.SECONDS);
-                if (!Strings.isNullOrEmpty(msg)) {
+                if (msg != null && !msg.isEmpty() && !msg.isBlank()) {
                     publishMessage(msg);
                 }
             } catch (Exception e) {
-                logger.warn("error getting message from queue", e);
+                logger.log(Level.WARNING, "error getting message from queue", e);
             }
         }
     }
 
     protected void publishMessage(String msg) {
-        logger.debug("publishing message: {}", msg);
+        logger.fine(() -> "publishing message: " + msg);
         try {
-            if (Strings.isNullOrEmpty(msg)) {
-                return;
-            }
-
             String gchatJsonMsg = convertToGchat(msg);
-            logger.info("sending to gchat: {}", gchatJsonMsg);
-            var rb = RequestBody.create(gchatJsonMsg, JSON);
-            var r = new Request.Builder().url(cp.getChatUrl()).post(rb).build();
-            try(Response resp = client.newCall(r).execute()) {
-                logger.debug("received response: {} {}", resp.code(),
-                        resp.body() != null ? resp.body().string() : "<null>");
-            }
+            logger.info(() -> "sending to gchat: " + gchatJsonMsg);
+            var req = HttpRequest.newBuilder(chatUri)
+                    .POST(HttpRequest.BodyPublishers.ofString(gchatJsonMsg))
+                    .header("Content-Type", "application/json; charset=utf-8")
+                    .build();
+            var resp = client.send(req, HttpResponse.BodyHandlers.ofString());
+            logger.fine(() -> "received response: " + resp.statusCode() + " " + resp.body());
         } catch (Exception e) {
-            logger.warn("error creating request for msg:{}", msg, e);
+            logger.log(Level.WARNING, e, () -> "error creating request for msg: " + msg);
         }
     }
 
