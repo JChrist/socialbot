@@ -72,7 +72,7 @@ public class ListPoller {
             if (resp.statusCode() < 200 || resp.statusCode() >= 300) {
                 logger.warning(() -> "error getting list statuses, received status code: " + resp.statusCode() +
                         " with body:{}" + resp.body());
-                return null;
+                return Collections.emptyList();
             }
             var sts = new JSONArray(resp.body());
             TreeSet<JSONObject> tr = new TreeSet<>(Comparator.comparingLong(js -> js.getLong("id")));
